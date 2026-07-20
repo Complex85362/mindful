@@ -1,0 +1,15 @@
+# Flutter/Dart
+**/build/
+**/.dart_tool/
+**/.packages
+**/pubspec.lock
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+
+# IDE
+.idea/
+*.iml
+
+# Melos
+.melos_tool/
+pubspec_overrides.yaml
