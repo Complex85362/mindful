@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/author_list.dart';
-import '../widgets/quote_of_day_card.dart';
+
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../widgets/author_list.dart';
+import '../widgets/mood_checkin_card.dart';
+import '../widgets/quote_of_day_card.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});

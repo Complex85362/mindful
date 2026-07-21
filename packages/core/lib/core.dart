@@ -36,3 +36,13 @@ export 'src/features/content/domain/usecases/get_quote_of_the_day.dart';
 // Content feature — data
 export 'src/features/content/data/datasources/content_remote_datasource.dart';
 export 'src/features/content/data/repositories/content_repository_impl.dart';
+
+// Mood feature — domain
+export 'src/features/mood/domain/entities/mood_log.dart';
+export 'src/features/mood/domain/repositories/mood_repository.dart';
+export 'src/features/mood/domain/usecases/log_mood.dart';
+export 'src/features/mood/domain/usecases/get_latest_mood.dart';
+
+// Mood feature — data
+export 'src/features/mood/data/datasources/mood_remote_datasource.dart';
+export 'src/features/mood/data/repositories/mood_repository_impl.dart';
