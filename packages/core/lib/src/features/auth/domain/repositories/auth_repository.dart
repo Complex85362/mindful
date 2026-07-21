@@ -21,5 +21,9 @@ abstract class AuthRepository{
 
   Future<Result<void>> signOut();
 
-
+  Future<Result<User>> updateProfile({
+    required String uid,
+    String? displayName,
+    String? avatarUrl,
+  });
 }

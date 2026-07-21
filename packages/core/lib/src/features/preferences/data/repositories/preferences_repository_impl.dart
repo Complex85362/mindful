@@ -49,4 +49,15 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
       return Result.failure(UnknownFailure(e.toString()));
     }
   }
+  @override
+  Future<Result<List<String>>> getUserPreferenceIds(String userId) async {
+    try {
+      final ids = await _dataSource.getUserPreferenceIds(userId);
+      return Result.success(ids);
+    } on firestore.FirebaseException catch (e) {
+      return Result.failure(UnknownFailure(e.message ?? 'Could not load preferences.'));
+    } catch (e) {
+      return Result.failure(UnknownFailure(e.toString()));
+    }
+  }
 }

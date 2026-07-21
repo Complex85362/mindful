@@ -79,7 +79,24 @@ class AuthRepositoryImpl implements AuthRepository{
       return Result.failure(UnknownFailure(e.toString()));
     }
   }
-
+  @override
+  Future<Result<User>> updateProfile({
+    required String uid,
+    String? displayName,
+    String? avatarUrl,
+  }) async {
+    try {
+      final user = await _dataSource.updateProfile(
+        displayName: displayName,
+        avatarUrl: avatarUrl,
+      );
+      return Result.success(user);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      return Result.failure(_mapFirebaseAuthException(e));
+    } catch (e) {
+      return Result.failure(UnknownFailure(e.toString()));
+    }
+  }
   Failure _mapFirebaseAuthException(firebase_auth.FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':

@@ -79,6 +79,19 @@ class AuthRemoteDataSource {
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
     return UserModel.fromFirebaseUser(userCredential.user!);
   }
+  Future<UserModel> updateProfile({String? displayName, String? avatarUrl}) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw firebase_auth.FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'No signed-in user to update.',
+      );
+    }
+    if (displayName != null) await user.updateDisplayName(displayName);
+    if (avatarUrl != null) await user.updatePhotoURL(avatarUrl);
+    await user.reload();
+    return UserModel.fromFirebaseUser(_firebaseAuth.currentUser!);
+  }
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
     if (_googleSignInInitialized) {

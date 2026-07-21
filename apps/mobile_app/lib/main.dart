@@ -15,6 +15,7 @@ import 'features/preferences/presentation/providers/preferences_provider.dart';
 import 'features/preferences/presentation/screens/preferences_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'features/home/presentation/providers/notification_settings_provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -53,6 +54,7 @@ class MindfulApp extends StatelessWidget {
             signUpWithEmail: SignUpWithEmail(authRepository),
             signInWithGoogle: SignInWithGoogle(authRepository),
             signOut: SignOut(authRepository),
+            updateProfile: UpdateProfile(authRepository),
             authRepository: authRepository,
           ),
         ),
@@ -61,6 +63,7 @@ class MindfulApp extends StatelessWidget {
             getCategories: GetCategories(preferencesRepository),
             savePreferences: SavePreferences(preferencesRepository),
             checkHasPreferences: CheckHasPreferences(preferencesRepository),
+            getUserPreferences: GetUserPreferences(preferencesRepository),
           ),
         ),
         ChangeNotifierProvider(
@@ -103,6 +106,7 @@ class MindfulApp extends StatelessWidget {
             sendChatMessage: SendChatMessage(chatRepository),
           ),
         ),
+        ChangeNotifierProvider(create: (_) => NotificationSettingsProvider()),
       ],
       child: MaterialApp(
         title: 'Mindful',

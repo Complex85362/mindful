@@ -92,3 +92,6 @@ export 'src/features/chat/domain/usecases/send_chat_message.dart';
 // Chat feature — data
 export 'src/features/chat/data/datasources/chat_remote_datasource.dart';
 export 'src/features/chat/data/repositories/chat_repository_impl.dart';
+export 'src/features/auth/domain/usecases/update_profile.dart';
+export 'src/features/preferences/domain/usecases/get_user_preferences.dart';
+export 'src/common/avatar_upload_service.dart';
