@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 class AuthProvider extends ChangeNotifier{
   final SignInWithEmail _signInWIthEmail;
   final SignUpWithEmail _signUpWithEmail;
+  final SignInWithGoogle _signInWithGoogle;
   final SignOut _signOut;
   final AuthRepository _authRepository;
 
@@ -24,10 +25,12 @@ class AuthProvider extends ChangeNotifier{
   AuthProvider({
     required SignInWithEmail signInWithEmail,
     required SignUpWithEmail signUpWithEmail,
+    required SignInWithGoogle signInWithGoogle,
     required SignOut signOut,
     required AuthRepository authRepository,
   }) : _signInWIthEmail = signInWithEmail,
         _signUpWithEmail = signUpWithEmail,
+        _signInWithGoogle = signInWithGoogle,
         _signOut = signOut,
         _authRepository = authRepository{
     _authStateSubscription = _authRepository.authStateChanges.listen((user) {
@@ -91,7 +94,28 @@ class AuthProvider extends ChangeNotifier{
   Future<void> signOut() async{
     await _signOut();
   }
+  Future<bool> signInWithGoogle() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
 
+    final result = await _signInWithGoogle();
+
+    return result.fold(
+          (failure) {
+        _errorMessage = failure.message;
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      },
+          (user) {
+        _currentUser = user;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
   @override
   void dispose(){
     _authStateSubscription?.cancel();

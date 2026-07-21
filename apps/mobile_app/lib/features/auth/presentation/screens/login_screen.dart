@@ -92,6 +92,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('or', style: Theme.of(context).textTheme.bodySmall),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  OutlinedButton.icon(
+                    onPressed: authProvider.isLoading
+                        ? null
+                        : () => context.read<AuthProvider>().signInWithGoogle(),
+                    icon: const Icon(Icons.g_mobiledata, size: 28), // placeholder icon, see note below
+                    label: const Text('Continue with Google'),
+                  ),
                   const SizedBox(height:16),
                   TextButton(
                     onPressed:(){

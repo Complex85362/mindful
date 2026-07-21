@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../models/user_model.dart';
 
@@ -10,7 +11,8 @@ import '../models/user_model.dart';
 /// honest wrapper around "what Firebase actually does."
 class AuthRemoteDataSource {
   final firebase_auth.FirebaseAuth _firebaseAuth;
-
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  bool _googleSignInInitialized = false;
   AuthRemoteDataSource({firebase_auth.FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
@@ -51,15 +53,36 @@ class AuthRemoteDataSource {
       createdAt: firebaseUser.metadata.creationTime ?? DateTime.now(),
     );
   }
-
-  Future<UserModel> signInWithGoogle() async {
-    // Deferred to a dedicated feature branch -- google_sign_in's current API
-    // needs platform-specific handling (web vs mobile) that deserves its
-    // own focused pass rather than being rushed here.
-    throw UnimplementedError('Google Sign-In not yet implemented');
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (_googleSignInInitialized) return;
+    await _googleSignIn.initialize(
+      serverClientId: '669086846794-bndm1figls8fpfmp4g92rvlcp0d16dfr.apps.googleusercontent.com',
+    );
+    _googleSignInInitialized = true;
   }
+  Future<UserModel> signInWithGoogle() async {
+    await _ensureGoogleSignInInitialized();
 
+    // Opens the account picker / Credential Manager sheet. Throws a
+    // GoogleSignInException (not a plain Exception) if the user cancels --
+    // caught one layer out, in the repository.
+    final googleUser = await _googleSignIn.authenticate();
+
+    // NOTE: in v7, .authentication is a synchronous getter, not an async
+    // method -- no `await` here.
+    final googleAuth = googleUser.authentication;
+
+    final credential = firebase_auth.GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
+
+    final userCredential = await _firebaseAuth.signInWithCredential(credential);
+    return UserModel.fromFirebaseUser(userCredential.user!);
+  }
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+    if (_googleSignInInitialized) {
+      await _googleSignIn.signOut();
+    }
   }
 }

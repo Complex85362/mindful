@@ -47,6 +47,7 @@ class MindfulApp extends StatelessWidget {
           create: (_) => AuthProvider(
             signInWithEmail: SignInWithEmail(authRepository),
             signUpWithEmail: SignUpWithEmail(authRepository),
+            signInWithGoogle: SignInWithGoogle(authRepository),
             signOut: SignOut(authRepository),
             authRepository: authRepository,
           ),
