@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../widgets/author_list.dart';
+import '../widgets/quote_of_day_card.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 
 class HomeTab extends StatelessWidget {
@@ -21,8 +22,20 @@ class HomeTab extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Text('Signed in as: ${user?.email ?? "unknown"}'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const QuoteOfDayCard(),
+            const MoodCheckinCard(),
+            Text('Authors', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 8),
+            const AuthorList(),
+            const SizedBox(height: 16),
+            Text('Signed in as: ${user?.email ?? "unknown"}'),
+          ],
+        ),
       ),
     );
   }
