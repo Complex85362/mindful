@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/content_provider.dart';
+import '../providers/favorites_provider.dart';
 import '../widgets/author_list.dart';
 import '../widgets/mood_checkin_card.dart';
 import '../widgets/quote_of_day_card.dart';
@@ -21,6 +22,11 @@ class _HomeTabState extends State<HomeTab> {
     Future.microtask(() {
       if (!mounted) return;
       context.read<ContentProvider>().loadHomeContent();
+      context.read<ContentProvider>().loadHomeContent();
+      final userId = context.read<AuthProvider>().currentUser?.uid;
+      if (userId != null) {
+        context.read<FavoritesProvider>().loadFavorites(userId);
+      }
     });
   }
 

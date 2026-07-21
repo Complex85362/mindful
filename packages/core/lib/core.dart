@@ -46,3 +46,17 @@ export 'src/features/mood/domain/usecases/get_latest_mood.dart';
 // Mood feature — data
 export 'src/features/mood/data/datasources/mood_remote_datasource.dart';
 export 'src/features/mood/data/repositories/mood_repository_impl.dart';
+
+// Content feature — additional usecase
+export 'src/features/content/domain/usecases/get_quote_by_id.dart';
+
+// Favorites feature — domain
+export 'src/features/favorites/domain/entities/favorite.dart';
+export 'src/features/favorites/domain/repositories/favorites_repository.dart';
+export 'src/features/favorites/domain/usecases/add_favorite.dart';
+export 'src/features/favorites/domain/usecases/remove_favorite.dart';
+export 'src/features/favorites/domain/usecases/get_favorites.dart';
+
+// Favorites feature — data
+export 'src/features/favorites/data/datasources/favorites_remote_datasource.dart';
+export 'src/features/favorites/data/repositories/favorites_repository_impl.dart';
