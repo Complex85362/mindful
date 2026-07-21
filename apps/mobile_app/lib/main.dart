@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/home/presentation/providers/mood_provider.dart';
 import 'features/home/presentation/screens/main_shell.dart';
 import 'features/preferences/presentation/providers/preferences_provider.dart';
 import 'features/preferences/presentation/screens/preferences_screen.dart';
@@ -27,7 +28,8 @@ class MindfulApp extends StatelessWidget {
 
     final preferencesRemoteDataSource = PreferencesRemoteDataSource();
     final preferencesRepository = PreferencesRepositoryImpl(preferencesRemoteDataSource);
-
+    final moodRemoteDataSource = MoodRemoteDataSource();
+    final moodRepository = MoodRepositoryImpl(moodRemoteDataSource);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -43,6 +45,12 @@ class MindfulApp extends StatelessWidget {
             getCategories: GetCategories(preferencesRepository),
             savePreferences: SavePreferences(preferencesRepository),
             checkHasPreferences: CheckHasPreferences(preferencesRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MoodProvider(
+            logMood: LogMood(moodRepository),
+            getLatestMood: GetLatestMood(moodRepository),
           ),
         ),
       ],
@@ -94,6 +102,7 @@ class _PreferencesGateState extends State<PreferencesGate> {
   @override
   Widget build(BuildContext context) {
     final prefsProvider = context.watch<PreferencesProvider>();
+
 
     if (prefsProvider.hasPreferences == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
