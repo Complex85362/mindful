@@ -35,4 +35,16 @@ class ContentRepositoryImpl implements ContentRepository {
       return Result.failure(UnknownFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Result<Quote?>> getQuoteById(String id) async {
+    try {
+      final quote = await _dataSource.getQuoteById(id);
+      return Result.success(quote);
+    } on firestore.FirebaseException catch (e) {
+      return Result.failure(UnknownFailure(e.message ?? 'Could not load quote.'));
+    } catch (e) {
+      return Result.failure(UnknownFailure(e.toString()));
+    }
+  }
 }

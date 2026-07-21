@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/home/presentation/providers/content_provider.dart';
+import 'features/home/presentation/providers/favorites_provider.dart';
 import 'features/home/presentation/providers/mood_provider.dart';
 import 'features/home/presentation/screens/main_shell.dart';
 import 'features/preferences/presentation/providers/preferences_provider.dart';
@@ -32,6 +33,8 @@ class MindfulApp extends StatelessWidget {
     final preferencesRepository = PreferencesRepositoryImpl(preferencesRemoteDataSource);
     final moodRemoteDataSource = MoodRemoteDataSource();
     final moodRepository = MoodRepositoryImpl(moodRemoteDataSource);
+    final favoritesRemoteDataSource = FavoritesRemoteDataSource();
+    final favoritesRepository = FavoritesRepositoryImpl(favoritesRemoteDataSource);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -59,6 +62,14 @@ class MindfulApp extends StatelessWidget {
           create: (_) => ContentProvider(
             getAuthors: GetAuthors(contentRepository),
             getQuoteOfTheDay: GetQuoteOfTheDay(contentRepository),
+            getQuoteById: GetQuoteById(contentRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FavoritesProvider(
+            addFavorite: AddFavorite(favoritesRepository),
+            removeFavorite: RemoveFavorite(favoritesRepository),
+            getFavorites: GetFavorites(favoritesRepository),
           ),
         ),
       ],

@@ -25,4 +25,9 @@ class ContentRemoteDataSource {
     final randomDoc = snapshot.docs[_random.nextInt(snapshot.docs.length)];
     return QuoteModel.fromFirestore(randomDoc);
   }
+  Future<QuoteModel?> getQuoteById(String id) async {
+    final doc = await _firestore.collection('quotes').doc(id).get();
+    if (!doc.exists) return null;
+    return QuoteModel.fromFirestore(doc);
+  }
 }
