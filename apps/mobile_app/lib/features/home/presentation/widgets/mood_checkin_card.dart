@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../providers/streak_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/mood_provider.dart';
 
@@ -84,10 +84,13 @@ class _MoodCheckinCardState extends State<MoodCheckinCard> {
                     onSelected: (_) async {
                       final userId = context.read<AuthProvider>().currentUser?.uid;
                       if (userId == null) return;
-                      await context.read<MoodProvider>().logMood(
+                      final success = await context.read<MoodProvider>().logMood(
                         userId: userId,
                         mood: entry.key,
                       );
+                      if (success && context.mounted) {
+                        await context.read<StreakProvider>().recordActivity(userId);
+                      }
                     },
                   );
                 }).toList(),

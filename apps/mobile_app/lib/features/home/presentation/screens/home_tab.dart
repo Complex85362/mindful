@@ -7,6 +7,7 @@ import '../providers/favorites_provider.dart';
 import '../widgets/author_list.dart';
 import '../widgets/mood_checkin_card.dart';
 import '../widgets/quote_of_day_card.dart';
+import '../widgets/streak_badge.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -39,6 +40,8 @@ class _HomeTabState extends State<HomeTab> {
       appBar: AppBar(
         title: const Text('Mindful'),
         actions: [
+          const StreakBadge(),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => context.read<AuthProvider>().signOut(),
