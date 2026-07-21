@@ -35,11 +35,13 @@ class AuthRepositoryImpl implements AuthRepository{
   Future<Result<User>> signUpWithEmail({
     required String email,
     required String password,
+  required String displayName,
 }) async{
     try{
       final user = await _dataSource.signUpWithEmail(
         email: email,
         password : password,
+        displayName: displayName,
       );
       return Result.success(user);
     } on firebase_auth.FirebaseAuthException catch (e){

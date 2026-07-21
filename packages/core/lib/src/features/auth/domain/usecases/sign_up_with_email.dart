@@ -9,8 +9,9 @@ class SignUpWithEmail {
   Future<Result<User>> call({
     required String email,
     required String password,
+    required String displayName,
   }){
-    return repository.signUpWithEmail(email: email, password: password);
+    return repository.signUpWithEmail(email: email, password: password, displayName: displayName);
   }
 
 }
