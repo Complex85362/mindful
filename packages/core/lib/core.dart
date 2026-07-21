@@ -83,3 +83,12 @@ export 'src/features/game/domain/usecases/get_leaderboard.dart';
 // Game feature — data
 export 'src/features/game/data/datasources/game_remote_datasource.dart';
 export 'src/features/game/data/repositories/game_repository_impl.dart';
+// Chat feature — domain
+export 'src/features/chat/domain/entities/chat_message.dart';
+export 'src/features/chat/domain/repositories/chat_repository.dart';
+export 'src/features/chat/domain/usecases/get_chat_history.dart';
+export 'src/features/chat/domain/usecases/send_chat_message.dart';
+
+// Chat feature — data
+export 'src/features/chat/data/datasources/chat_remote_datasource.dart';
+export 'src/features/chat/data/repositories/chat_repository_impl.dart';

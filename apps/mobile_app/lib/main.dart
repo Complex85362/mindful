@@ -2,9 +2,9 @@ import 'package:core/core.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/home/presentation/providers/chat_provider.dart';
 import 'features/home/presentation/providers/content_provider.dart';
 import 'features/home/presentation/providers/favorites_provider.dart';
 import 'features/home/presentation/providers/game_provider.dart';
@@ -14,11 +14,13 @@ import 'features/home/presentation/screens/main_shell.dart';
 import 'features/preferences/presentation/providers/preferences_provider.dart';
 import 'features/preferences/presentation/screens/preferences_screen.dart';
 import 'firebase_options.dart';
-
+import 'package:firebase_app_check/firebase_app_check.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await FirebaseAppCheck.instance.activate(
+    providerAndroid: AndroidDebugProvider(),
+  );
   runApp(const MindfulApp());
 }
 
@@ -41,6 +43,8 @@ class MindfulApp extends StatelessWidget {
     final streakRepository = StreakRepositoryImpl(streakRemoteDataSource);
     final gameRemoteDataSource = GameRemoteDataSource();
     final gameRepository = GameRepositoryImpl(gameRemoteDataSource);
+    final chatRemoteDataSource = ChatRemoteDataSource();
+    final chatRepository = ChatRepositoryImpl(chatRemoteDataSource);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -91,6 +95,12 @@ class MindfulApp extends StatelessWidget {
             getQuestions: GetQuestions(gameRepository),
             submitAttempt: SubmitAttempt(gameRepository),
             getLeaderboard: GetLeaderboard(gameRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ChatProvider(
+            getChatHistory: GetChatHistory(chatRepository),
+            sendChatMessage: SendChatMessage(chatRepository),
           ),
         ),
       ],
