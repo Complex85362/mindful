@@ -35,12 +35,21 @@ class AuthRemoteDataSource {
   Future<UserModel> signUpWithEmail({
     required String email,
     required String password,
+    required String displayName,
   }) async {
     final credential = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    return UserModel.fromFirebaseUser(credential.user!);
+    final firebaseUser = credential.user!;
+    await firebaseUser.updateDisplayName(displayName);
+    return UserModel(
+      uid: firebaseUser.uid,
+      email: firebaseUser.email ?? email,
+      displayName: displayName,
+      avatarUrl: firebaseUser.photoURL,
+      createdAt: firebaseUser.metadata.creationTime ?? DateTime.now(),
+    );
   }
 
   Future<UserModel> signInWithGoogle() async {
