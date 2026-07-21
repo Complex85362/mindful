@@ -72,3 +72,14 @@ export 'src/features/streak/domain/usecases/record_activity.dart';
 // Streak feature — data
 export 'src/features/streak/data/datasources/streak_remote_datasource.dart';
 export 'src/features/streak/data/repositories/streak_repository_impl.dart';
+// Game feature — domain
+export 'src/features/game/domain/entities/game_question.dart';
+export 'src/features/game/domain/entities/leaderboard_entry.dart';
+export 'src/features/game/domain/repositories/game_repository.dart';
+export 'src/features/game/domain/usecases/get_questions.dart';
+export 'src/features/game/domain/usecases/submit_attempt.dart';
+export 'src/features/game/domain/usecases/get_leaderboard.dart';
+
+// Game feature — data
+export 'src/features/game/data/datasources/game_remote_datasource.dart';
+export 'src/features/game/data/repositories/game_repository_impl.dart';

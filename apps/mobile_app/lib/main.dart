@@ -7,6 +7,7 @@ import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/home/presentation/providers/content_provider.dart';
 import 'features/home/presentation/providers/favorites_provider.dart';
+import 'features/home/presentation/providers/game_provider.dart';
 import 'features/home/presentation/providers/mood_provider.dart';
 import 'features/home/presentation/providers/streak_provider.dart';
 import 'features/home/presentation/screens/main_shell.dart';
@@ -38,6 +39,8 @@ class MindfulApp extends StatelessWidget {
     final favoritesRepository = FavoritesRepositoryImpl(favoritesRemoteDataSource);
     final streakRemoteDataSource = StreakRemoteDataSource();
     final streakRepository = StreakRepositoryImpl(streakRemoteDataSource);
+    final gameRemoteDataSource = GameRemoteDataSource();
+    final gameRepository = GameRepositoryImpl(gameRemoteDataSource);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -80,6 +83,13 @@ class MindfulApp extends StatelessWidget {
           create: (_) => StreakProvider(
             getStreak: GetStreak(streakRepository),
             recordActivity: RecordActivity(streakRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GameProvider(
+            getQuestions: GetQuestions(gameRepository),
+            submitAttempt: SubmitAttempt(gameRepository),
+            getLeaderboard: GetLeaderboard(gameRepository),
           ),
         ),
       ],
