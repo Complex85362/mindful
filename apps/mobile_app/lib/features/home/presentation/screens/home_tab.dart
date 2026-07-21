@@ -2,10 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../providers/content_provider.dart';
+import '../widgets/author_list.dart';
 import '../widgets/mood_checkin_card.dart';
+import '../widgets/quote_of_day_card.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<ContentProvider>().loadHomeContent();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +39,21 @@ class HomeTab extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const QuoteOfDayCard(),
             const MoodCheckinCard(),
-            Text('Signed in as: ${user?.email ?? "unknown"}'),
+            Text('Authors', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 8),
+            const AuthorList(),
+            const SizedBox(height: 16),
+            Text(
+              'Hello, ${user?.displayName?.isNotEmpty == true ? user!.displayName : "there"}',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ],
         ),
       ),

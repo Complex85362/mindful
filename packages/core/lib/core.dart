@@ -24,6 +24,19 @@ export 'src/features/preferences/domain/usecases/check_has_preferences.dart';
 export 'src/features/preferences/data/datasources/preferences_remote_datasource.dart';
 export 'src/features/preferences/data/repositories/preferences_repository_impl.dart';
 
+
+
+// Content feature — domain
+export 'src/features/content/domain/entities/author.dart';
+export 'src/features/content/domain/entities/quote.dart';
+export 'src/features/content/domain/repositories/content_repository.dart';
+export 'src/features/content/domain/usecases/get_authors.dart';
+export 'src/features/content/domain/usecases/get_quote_of_the_day.dart';
+
+// Content feature — data
+export 'src/features/content/data/datasources/content_remote_datasource.dart';
+export 'src/features/content/data/repositories/content_repository_impl.dart';
+
 // Mood feature — domain
 export 'src/features/mood/domain/entities/mood_log.dart';
 export 'src/features/mood/domain/repositories/mood_repository.dart';
