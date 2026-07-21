@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/home/presentation/providers/content_provider.dart';
 import 'features/home/presentation/providers/mood_provider.dart';
 import 'features/home/presentation/screens/main_shell.dart';
 import 'features/preferences/presentation/providers/preferences_provider.dart';
@@ -25,7 +26,8 @@ class MindfulApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authRemoteDataSource = AuthRemoteDataSource();
     final authRepository = AuthRepositoryImpl(authRemoteDataSource);
-
+    final contentRemoteDataSource = ContentRemoteDataSource();
+    final contentRepository = ContentRepositoryImpl(contentRemoteDataSource);
     final preferencesRemoteDataSource = PreferencesRemoteDataSource();
     final preferencesRepository = PreferencesRepositoryImpl(preferencesRemoteDataSource);
     final moodRemoteDataSource = MoodRemoteDataSource();
@@ -51,6 +53,12 @@ class MindfulApp extends StatelessWidget {
           create: (_) => MoodProvider(
             logMood: LogMood(moodRepository),
             getLatestMood: GetLatestMood(moodRepository),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ContentProvider(
+            getAuthors: GetAuthors(contentRepository),
+            getQuoteOfTheDay: GetQuoteOfTheDay(contentRepository),
           ),
         ),
       ],
