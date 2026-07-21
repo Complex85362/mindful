@@ -23,3 +23,13 @@ export 'src/features/preferences/domain/usecases/check_has_preferences.dart';
 // Preferences feature — data
 export 'src/features/preferences/data/datasources/preferences_remote_datasource.dart';
 export 'src/features/preferences/data/repositories/preferences_repository_impl.dart';
+
+// Mood feature — domain
+export 'src/features/mood/domain/entities/mood_log.dart';
+export 'src/features/mood/domain/repositories/mood_repository.dart';
+export 'src/features/mood/domain/usecases/log_mood.dart';
+export 'src/features/mood/domain/usecases/get_latest_mood.dart';
+
+// Mood feature — data
+export 'src/features/mood/data/datasources/mood_remote_datasource.dart';
+export 'src/features/mood/data/repositories/mood_repository_impl.dart';
