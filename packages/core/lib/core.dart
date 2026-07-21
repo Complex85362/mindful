@@ -63,3 +63,12 @@ export 'src/features/favorites/data/repositories/favorites_repository_impl.dart'
 // Content feature — books
 export 'src/features/content/domain/entities/book.dart';
 export 'src/features/content/domain/usecases/get_books.dart';
+// Streak feature — domain
+export 'src/features/streak/domain/entities/streak.dart';
+export 'src/features/streak/domain/repositories/streak_repository.dart';
+export 'src/features/streak/domain/usecases/get_streak.dart';
+export 'src/features/streak/domain/usecases/record_activity.dart';
+
+// Streak feature — data
+export 'src/features/streak/data/datasources/streak_remote_datasource.dart';
+export 'src/features/streak/data/repositories/streak_repository_impl.dart';
