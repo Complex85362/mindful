@@ -63,6 +63,7 @@ class MindfulApp extends StatelessWidget {
             getAuthors: GetAuthors(contentRepository),
             getQuoteOfTheDay: GetQuoteOfTheDay(contentRepository),
             getQuoteById: GetQuoteById(contentRepository),
+            getBooks: GetBooks(contentRepository),
           ),
         ),
         ChangeNotifierProvider(

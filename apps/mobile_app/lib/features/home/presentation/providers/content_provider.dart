@@ -5,13 +5,16 @@ class ContentProvider extends ChangeNotifier {
   final GetAuthors _getAuthors;
   final GetQuoteOfTheDay _getQuoteOfTheDay;
   final GetQuoteById _getQuoteById;
+  final GetBooks _getBooks;
   ContentProvider({
     required GetAuthors getAuthors,
     required GetQuoteOfTheDay getQuoteOfTheDay,
     required GetQuoteById getQuoteById,
+    required GetBooks getBooks,
   })  : _getAuthors = getAuthors,
         _getQuoteOfTheDay = getQuoteOfTheDay,
-        _getQuoteById = getQuoteById;
+        _getQuoteById = getQuoteById,
+        _getBooks = getBooks;
 
   final Map<String, Quote> _quoteCache = {};
   List<Author> _authors = [];
@@ -19,11 +22,13 @@ class ContentProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   bool _hasLoaded = false; // same one-shot-per-session guard as MoodProvider
+  List<Book> _books = [];
 
   List<Author> get authors => _authors;
   Quote? get quoteOfTheDay => _quoteOfTheDay;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  List<Book> get books => _books;
 
   /// Fetches a single quote by ID, used by SavedTab to render favorited
   /// quotes. Cached locally so re-visiting Saved doesn't re-fetch the same
@@ -60,7 +65,7 @@ class ContentProvider extends ChangeNotifier {
 
     final authorsResult = await _getAuthors();
     final quoteResult = await _getQuoteOfTheDay();
-
+    final booksResult = await _getBooks();
     authorsResult.fold(
           (failure) => _errorMessage = failure.message,
           (authors) => _authors = authors,
@@ -69,7 +74,10 @@ class ContentProvider extends ChangeNotifier {
           (failure) => _errorMessage ??= failure.message,
           (quote) => _quoteOfTheDay = quote,
     );
-
+    booksResult.fold(
+          (failure) => _errorMessage ??= failure.message,
+          (books) => _books = books,
+    );
     _isLoading = false;
     notifyListeners();
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 
 import '../../domain/entities/author.dart';
+import '../../domain/entities/book.dart';
 import '../../domain/entities/quote.dart';
 import '../../domain/repositories/content_repository.dart';
 import '../../../../common/failure.dart';
@@ -43,6 +44,17 @@ class ContentRepositoryImpl implements ContentRepository {
       return Result.success(quote);
     } on firestore.FirebaseException catch (e) {
       return Result.failure(UnknownFailure(e.message ?? 'Could not load quote.'));
+    } catch (e) {
+      return Result.failure(UnknownFailure(e.toString()));
+    }
+  }
+  @override
+  Future<Result<List<Book>>> getBooks() async {
+    try {
+      final books = await _dataSource.getBooks();
+      return Result.success(books);
+    } on firestore.FirebaseException catch (e) {
+      return Result.failure(UnknownFailure(e.message ?? 'Could not load books.'));
     } catch (e) {
       return Result.failure(UnknownFailure(e.toString()));
     }

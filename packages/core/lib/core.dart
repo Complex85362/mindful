@@ -60,3 +60,6 @@ export 'src/features/favorites/domain/usecases/get_favorites.dart';
 // Favorites feature — data
 export 'src/features/favorites/data/datasources/favorites_remote_datasource.dart';
 export 'src/features/favorites/data/repositories/favorites_repository_impl.dart';
+// Content feature — books
+export 'src/features/content/domain/entities/book.dart';
+export 'src/features/content/domain/usecases/get_books.dart';
