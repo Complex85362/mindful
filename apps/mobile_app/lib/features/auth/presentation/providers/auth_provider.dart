@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,7 @@ class AuthProvider extends ChangeNotifier{
   final SignUpWithEmail _signUpWithEmail;
   final SignInWithGoogle _signInWithGoogle;
   final SignOut _signOut;
+  final UpdateProfile _updateProfile;
   final AuthRepository _authRepository;
 
   StreamSubscription<User?>? _authStateSubscription;
@@ -27,12 +29,14 @@ class AuthProvider extends ChangeNotifier{
     required SignUpWithEmail signUpWithEmail,
     required SignInWithGoogle signInWithGoogle,
     required SignOut signOut,
+    required UpdateProfile updateProfile,
     required AuthRepository authRepository,
   }) : _signInWIthEmail = signInWithEmail,
         _signUpWithEmail = signUpWithEmail,
         _signInWithGoogle = signInWithGoogle,
         _signOut = signOut,
-        _authRepository = authRepository{
+        _updateProfile = updateProfile,
+        _authRepository = authRepository {
     _authStateSubscription = _authRepository.authStateChanges.listen((user) {
       _currentUser = user;
       notifyListeners();
@@ -116,6 +120,34 @@ class AuthProvider extends ChangeNotifier{
       },
     );
   }
+
+  /// Updates just the display name. Used by the Profile screen's
+  /// "edit name" dialog.
+  Future<bool> updateDisplayName(String displayName) async {
+    final uid = _currentUser?.uid;
+    if (uid == null) return false;
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final result = await _updateProfile(uid: uid, displayName: displayName);
+    return result.fold(
+          (failure) {
+        _errorMessage = failure.message;
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      },
+          (user) {
+        _currentUser = user;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
   @override
   void dispose(){
     _authStateSubscription?.cancel();

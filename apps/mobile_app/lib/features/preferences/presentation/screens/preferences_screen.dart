@@ -5,7 +5,12 @@ import '../providers/preferences_provider.dart';
 
 class PreferencesScreen extends StatefulWidget {
   final String userId;
-  const PreferencesScreen({super.key, required this.userId});
+  /// True when opened from Profile to edit existing choices -- shows a
+  /// back button, pre-loads current selections, and pops on save instead
+  /// of relying on PreferencesGate to route away.
+  final bool isEditing;
+
+  const PreferencesScreen({super.key, required this.userId, this.isEditing = false});
 
   @override
   State<PreferencesScreen> createState() => _PreferencesScreenState();
@@ -15,13 +20,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   @override
   void initState() {
     super.initState();
-    // Deferred with a microtask rather than called directly: calling a
-    // notifyListeners()-triggering method synchronously inside initState
-    // can fire before the widget tree has finished its first build pass.
-    // Scheduling it lets that first frame complete cleanly first.
     Future.microtask(() {
       if (!mounted) return;
-      context.read<PreferencesProvider>().loadCategories();
+      final provider = context.read<PreferencesProvider>();
+      provider.loadCategories();
+      if (widget.isEditing) {
+        provider.loadExistingSelections(widget.userId);
+      }
     });
   }
 
@@ -31,8 +36,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('What brings you here?'),
-        automaticallyImplyLeading: false, // no back button -- this step is mandatory
+        title: Text(widget.isEditing ? 'Edit preferences' : "What brings you here?"),
+        automaticallyImplyLeading: widget.isEditing, // no back button during mandatory onboarding
       ),
       body: SafeArea(
         child: Padding(
@@ -77,11 +82,16 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
               prefsProvider.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
-                onPressed: () =>
-                    context.read<PreferencesProvider>().savePreferences(widget.userId),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Text('Continue'),
+                onPressed: () async {
+                  final success =
+                  await context.read<PreferencesProvider>().savePreferences(widget.userId);
+                  if (success && widget.isEditing && context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(widget.isEditing ? 'Save changes' : 'Continue'),
                 ),
               ),
             ],

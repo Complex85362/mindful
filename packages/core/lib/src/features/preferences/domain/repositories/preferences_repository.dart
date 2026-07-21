@@ -11,5 +11,5 @@ abstract class PreferencesRepository {
 });
 
   Future<Result<bool>> hasPreferences(String userId);
-
+  Future<Result<List<String>>> getUserPreferenceIds(String userId);
 }

@@ -8,14 +8,17 @@ class PreferencesProvider extends ChangeNotifier {
   final GetCategories _getCategories;
   final SavePreferences _savePreferences;
   final CheckHasPreferences _checkHasPreferences;
+  final GetUserPreferences _getUserPreferences;
 
   PreferencesProvider({
     required GetCategories getCategories,
     required SavePreferences savePreferences,
     required CheckHasPreferences checkHasPreferences,
+    required GetUserPreferences getUserPreferences,
   })  : _getCategories = getCategories,
         _savePreferences = savePreferences,
-        _checkHasPreferences = checkHasPreferences;
+        _checkHasPreferences = checkHasPreferences,
+        _getUserPreferences = getUserPreferences;
 
   List<WellnessCategory> _categories = [];
   final Set<String> _selectedCategoryIds = {};
@@ -36,9 +39,6 @@ class PreferencesProvider extends ChangeNotifier {
     final result = await _checkHasPreferences(userId: userId);
     result.fold(
           (failure) {
-        // If the check itself fails (e.g. offline), default to showing the
-        // preferences screen rather than trapping the user on a spinner
-        // forever with no way forward.
         _hasPreferences = false;
         notifyListeners();
       },
@@ -64,6 +64,22 @@ class PreferencesProvider extends ChangeNotifier {
           (categories) {
         _categories = categories;
         _isLoading = false;
+        notifyListeners();
+      },
+    );
+  }
+
+  /// Pre-populates [_selectedCategoryIds] with the user's saved choices.
+  /// Called only when opening preferences in "edit" mode from Profile --
+  /// first-run onboarding starts blank on purpose.
+  Future<void> loadExistingSelections(String userId) async {
+    final result = await _getUserPreferences(userId);
+    result.fold(
+          (failure) {}, // fail quiet -- edit screen just starts blank
+          (categoryIds) {
+        _selectedCategoryIds
+          ..clear()
+          ..addAll(categoryIds);
         notifyListeners();
       },
     );
@@ -102,7 +118,7 @@ class PreferencesProvider extends ChangeNotifier {
       },
           (_) {
         _isLoading = false;
-        _hasPreferences = true; // flips PreferencesGate straight to HomeScreen
+        _hasPreferences = true;
         notifyListeners();
         return true;
       },

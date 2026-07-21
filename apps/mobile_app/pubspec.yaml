@@ -41,6 +41,8 @@ dependencies:
   firebase_core: ^4.12.1
   url_launcher: ^6.3.2
   firebase_app_check: ^0.4.5+2
+  image_picker: ^1.2.3
+  shared_preferences: ^2.5.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

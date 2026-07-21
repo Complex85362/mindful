@@ -18,7 +18,18 @@ class PreferencesRemoteDataSource {
     required String userId,
     required List<String> categoryIds,
   }) async {
+    // Replace, not append: clear this user's existing links first so that
+    // deselecting a category during an edit (from Profile) actually takes
+    // effect, instead of only ever accumulating new selections.
+    final existing = await _firestore
+        .collection('user_preferences')
+        .where('userId', isEqualTo: userId)
+        .get();
+
     final batch = _firestore.batch();
+    for (final doc in existing.docs) {
+      batch.delete(doc.reference);
+    }
     for (final categoryId in categoryIds) {
       final docRef = _firestore.collection('user_preferences').doc('${userId}_$categoryId');
       batch.set(docRef, {'userId': userId, 'categoryId': categoryId});
@@ -33,5 +44,13 @@ class PreferencesRemoteDataSource {
         .limit(1)
         .get();
     return snapshot.docs.isNotEmpty;
+  }
+
+  Future<List<String>> getUserPreferenceIds(String userId) async {
+    final snapshot = await _firestore
+        .collection('user_preferences')
+        .where('userId', isEqualTo: userId)
+        .get();
+    return snapshot.docs.map((d) => d.data()['categoryId'] as String).toList();
   }
 }
