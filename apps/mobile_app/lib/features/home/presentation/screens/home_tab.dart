@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../widgets/book_list.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/content_provider.dart';
 import '../providers/favorites_provider.dart';
@@ -55,6 +55,10 @@ class _HomeTabState extends State<HomeTab> {
             Text('Authors', style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 8),
             const AuthorList(),
+            const SizedBox(height: 16),
+            Text('Books', style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 8),
+            const BookList(),
             const SizedBox(height: 16),
             Text(
               'Hello, ${user?.displayName?.isNotEmpty == true ? user!.displayName : "there"}',

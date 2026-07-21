@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/author_model.dart';
+import '../models/book_model.dart';
 import '../models/quote_model.dart';
 
 class ContentRemoteDataSource {
@@ -29,5 +30,9 @@ class ContentRemoteDataSource {
     final doc = await _firestore.collection('quotes').doc(id).get();
     if (!doc.exists) return null;
     return QuoteModel.fromFirestore(doc);
+  }
+  Future<List<BookModel>> getBooks() async {
+    final snapshot = await _firestore.collection('books').get();
+    return snapshot.docs.map(BookModel.fromFirestore).toList();
   }
 }

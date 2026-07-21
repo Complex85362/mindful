@@ -39,6 +39,7 @@ dependencies:
     path: ../../packages/core
   provider: ^6.1.5+1
   firebase_core: ^4.12.1
+  url_launcher: ^6.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
