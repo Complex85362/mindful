@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/auth/presentation/screens/home_screen.dart';
+import 'features/home/presentation/screens/main_shell.dart';
 import 'features/preferences/presentation/providers/preferences_provider.dart';
 import 'features/preferences/presentation/screens/preferences_screen.dart';
 import 'firebase_options.dart';
@@ -101,6 +101,6 @@ class _PreferencesGateState extends State<PreferencesGate> {
     if (prefsProvider.hasPreferences == false) {
       return PreferencesScreen(userId: widget.userId);
     }
-    return const HomeScreen();
+    return const MainShell();
   }
 }
