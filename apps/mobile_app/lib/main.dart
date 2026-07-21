@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'features/auth/presentation/providers/auth_provider.dart';
-import 'features/auth/presentation/screens/home_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/auth/presentation/screens/home_screen.dart';
+import 'features/preferences/presentation/providers/preferences_provider.dart';
+import 'features/preferences/presentation/screens/preferences_screen.dart';
 import 'firebase_options.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -23,6 +25,9 @@ class MindfulApp extends StatelessWidget {
     final authRemoteDataSource = AuthRemoteDataSource();
     final authRepository = AuthRepositoryImpl(authRemoteDataSource);
 
+    final preferencesRemoteDataSource = PreferencesRemoteDataSource();
+    final preferencesRepository = PreferencesRepositoryImpl(preferencesRemoteDataSource);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -33,25 +38,69 @@ class MindfulApp extends StatelessWidget {
             authRepository: authRepository,
           ),
         ),
+        ChangeNotifierProvider(
+          create: (_) => PreferencesProvider(
+            getCategories: GetCategories(preferencesRepository),
+            savePreferences: SavePreferences(preferencesRepository),
+            checkHasPreferences: CheckHasPreferences(preferencesRepository),
+          ),
+        ),
       ],
-      child:MaterialApp(
-        title:'Mindful',
+      child: MaterialApp(
+        title: 'Mindful',
         theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal)),
         home: const AuthGate(),
       ),
     );
   }
 }
+
+/// Top-level gate: routes between the unauthenticated flow (Login/Signup)
+/// and PreferencesGate, which handles what happens once signed in.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    if(authProvider.isSignedIn){
-      return const HomeScreen();
+    if (authProvider.isSignedIn) {
+      return PreferencesGate(userId: authProvider.currentUser!.uid);
     }
     return const LoginScreen();
   }
 }
 
+/// Sits between AuthGate and the real app once a user is signed in. Checks
+/// whether they've completed the mandatory preferences step and routes
+/// accordingly: PreferencesScreen if not, HomeScreen if so.
+class PreferencesGate extends StatefulWidget {
+  final String userId;
+  const PreferencesGate({super.key, required this.userId});
+
+  @override
+  State<PreferencesGate> createState() => _PreferencesGateState();
+}
+
+class _PreferencesGateState extends State<PreferencesGate> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<PreferencesProvider>().checkHasPreferences(widget.userId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final prefsProvider = context.watch<PreferencesProvider>();
+
+    if (prefsProvider.hasPreferences == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (prefsProvider.hasPreferences == false) {
+      return PreferencesScreen(userId: widget.userId);
+    }
+    return const HomeScreen();
+  }
+}
